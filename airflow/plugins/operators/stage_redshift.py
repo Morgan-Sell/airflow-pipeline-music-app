@@ -12,8 +12,9 @@ class StageToRedshiftOperator(BaseOperator):
                  # Example:
                  # redshift_conn_id=your-connection-name
                  redshift_conn_id="redshift",
-                 aws_credentials_id="aws_credentials",
                  table="",
+                 aws_credentials_id="aws_credentials",
+                 s3_path=""
                  s3_bucket="",
                  s3_key="",
                  delimiter=",",
@@ -28,23 +29,33 @@ class StageToRedshiftOperator(BaseOperator):
         self.redshift_conn_id = redshift_conn_id,
         self.table = table,
         self.aws_credentials_id = aws_credentials_id,
+        self.s3_path = s3_path,
         self.s3_bucket = s3_bucket,
         self.s3_key = s3_key,
         self.delimiter = delimeter,
         self.ignore_headers = ignore_headers
 
+    stage_sql_template = """
+    COPY {table};
+    FROM '{s3_path}'
+    ACCESS_KEY_ID '{s3_key}'
+    SECRET_ACCESS_KEY '{}'
+    IGNOREHEADER {}
+    DELIMITER '{}'    
+    """
+        
     def execute(self, context):
         aws_hook = AwsHook(self.aws_credentials_id)
         credentials = aws_hook.get_credentials()
         redshift = PostgresHook(postgres_conn_id=self.redshift_conn_id)
         
-        self.log.info("Clearing data from destination Redshift table")
+        self.log.info("Connected with {}".format(self.redshift_conn_id))
         redshift.run("DELETE FROM {}".format(self.table))
         
-        self.log.info("Copying data from S3 to Redshift")
+        self.log.info("Staging data from S3 to Redshift")
         rendered_key = self.s3_key.format(**context)
 
-
+        s
 
 
 
