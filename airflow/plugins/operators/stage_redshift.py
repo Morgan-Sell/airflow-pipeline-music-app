@@ -5,7 +5,7 @@ from airflow.contrib.hooks.aws_hook import AwsHook
 
 class StageToRedshiftOperator(BaseOperator):
     ui_color = '#358140'
-
+    templated_fields = ("s3_key", )
     @apply_defaults
     def __init__(self,
                  # Define your operators params (with defaults) here
@@ -14,9 +14,9 @@ class StageToRedshiftOperator(BaseOperator):
                  redshift_conn_id="redshift",
                  table="",
                  aws_credentials_id="aws_credentials",
-                 s3_path=""
+                 s3_path="s3://udacity-dend"
                  s3_bucket="",
-                 s3_key="",
+                 s3_key="/{ execution_date.year }/{ execution_date.month } / { ds }-events.json",
                  delimiter=",",
                  ignore_headers=1,
                  *args, **kwargs):
