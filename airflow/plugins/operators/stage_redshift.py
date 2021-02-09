@@ -36,9 +36,9 @@ class StageToRedshiftOperator(BaseOperator):
         self.ignore_headers = ignore_headers
 
     stage_sql_template = """
-    COPY {table};
-    FROM '{s3_path}'
-    ACCESS_KEY_ID '{s3_key}'
+    COPY {};
+    FROM '{}'
+    ACCESS_KEY_ID '{}'
     SECRET_ACCESS_KEY '{}'
     IGNOREHEADER {}
     DELIMITER '{}'    
@@ -55,7 +55,14 @@ class StageToRedshiftOperator(BaseOperator):
         self.log.info("Staging data from S3 to Redshift")
         rendered_key = self.s3_key.format(**context)
 
-        s
-
+        staged_sql = StageToRedshiftOperator.copy_sql.format(
+            self.table,
+            self.s3_path,
+            credentials.access_key,
+            credentials.secret_key,
+            self.ignore_headers,
+            self.delimiter
+        )
+        redshift.run(staged_sql)
 
 
