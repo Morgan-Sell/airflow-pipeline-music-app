@@ -4,6 +4,16 @@ from airflow.utils.decorators import apply_defaults
 from airflow.contrib.hooks.aws_hook import AwsHook
 
 class StageToRedshiftOperator(BaseOperator):
+    stage_sql_template = """
+    COPY {};
+    FROM '{}'
+    ACCESS_KEY_ID '{}'
+    SECRET_ACCESS_KEY '{}'
+    IGNOREHEADER {}
+    DELIMITER '{}'    
+    """
+    
+    
     ui_color = '#358140'
     templated_fields = ("s3_key", )
     @apply_defaults
@@ -35,14 +45,7 @@ class StageToRedshiftOperator(BaseOperator):
         self.delimiter = delimeter,
         self.ignore_headers = ignore_headers
 
-    stage_sql_template = """
-    COPY {};
-    FROM '{}'
-    ACCESS_KEY_ID '{}'
-    SECRET_ACCESS_KEY '{}'
-    IGNOREHEADER {}
-    DELIMITER '{}'    
-    """
+    
         
     def execute(self, context):
         aws_hook = AwsHook(self.aws_credentials_id)
@@ -55,7 +58,7 @@ class StageToRedshiftOperator(BaseOperator):
         self.log.info("Staging data from S3 to Redshift")
         rendered_key = self.s3_key.format(**context)
 
-        staged_sql = StageToRedshiftOperator.copy_sql.format(
+        staged_sql = StageToRedshiftOperator.stage_sql_template.format(
             self.table,
             self.s3_path,
             credentials.access_key,

@@ -6,10 +6,10 @@ from airflow.plugins.helpers import sql_queries
 
 class LoadDimensionOperator(BaseOperator):
     truncate_sql = """
-    TRUNCATE TABLE {destination_table};
+    TRUNCATE TABLE {};
     """
     insert_sql = """
-    INSERT INTO {destination_table};
+    INSERT INTO {} {};
     """
     ui_color = '#80BD9E'
 
@@ -19,8 +19,8 @@ class LoadDimensionOperator(BaseOperator):
                  # Example:
                  # conn_id = your-connection-name
                  redshift_conn_id = "redshift",
-                 destination_table = "",
-                 append_data = False,
+                 table_name = "",
+                 truncate_data = True,
                  sql_query = "",
                  *args, **kwargs):
 
@@ -29,20 +29,22 @@ class LoadDimensionOperator(BaseOperator):
         # Example:
         # self.conn_id = conn_id
         self.redshift_conn_id = redshift_conn_id
-        self.destination_table = destination_table
-        self.append_data = append_data
+        self.table_name = destination_table
+        self.truncate_data = truncate_data
         self.sql_query = sql_query
         
 
     def execute(self, context):
-        redshift = PostgresHook(postgres_conn_id=self.redshift_conn_id)
-        self.log.info('Creating dimensions tables')
-        # If append_data is True, then only apply INSERT. Do not delete table.
-        if self.append_date:
-            dimensions_sql = LoadDimensionOperator.insert_sql + LoadDimensionOperator.sql_query
+        self.log.info(f"Started execution of LoadDimensionsOperator on {self.table_name}. \
+                      Delete existing data: {self.truncate_data}.")
+        redshift_hook = PostgresHook(postgres_conn_id=self.redshift_conn_id)
         
-        else:
-            dimensions_sql = LoadDimensionOperator.truncate_sql + LoadDimensionOperator.insert_sql + LoadDimensionOperator.sql_query
+     
+        if self.truncate_data:
+            redshift_hook.run(LoadDimensionOperator.truncate_sql.format(self.table_name))
         
+        redshift_hook.run(LoadDimensionOperator.insert_sql.format(self.table_name, self.sql_query))
         
-        redshift.run(dimensions_sql)
+        self.log.info(f"Completed implemenation of LoadDimensionOperator on {self.table_name}")
+    
+       
