@@ -3,7 +3,9 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class LoadFactOperator(BaseOperator):
-
+    insert_sql = """
+    INSERT INTO {destination_table};
+    """
     ui_color = '#F98866'
 
     @apply_defaults
@@ -12,18 +14,22 @@ class LoadFactOperator(BaseOperator):
                  # Example:
                  # conn_id = your-connection-name
                  redshift_conn_id = "redshift",
-                 origin_table = "",
                  destination_table = "",
-                 
+                 sql_query = "",
                  *args, **kwargs):
 
         super(LoadFactOperator, self).__init__(*args, **kwargs)
         # Map params here
         # Example:
         # self.conn_id = conn_id
-        self.redshift_conn_id = redshift_conn_id,
-        self.origin_table = origin_table,
-        self.destination_table = destination_table,
-
+        self.redshift_conn_id = redshift_conn_id
+        self.destination_table = destination_table
+        self.sql_query = sql_query
+        
     def execute(self, context):
-        self.log.info('LoadFactOperator not implemented yet')
+        
+        redshift = PostgresHook(postgres_conn_id=self.redshift_conn_id)
+        
+        self.log.info('Appending data to facts table')
+        facts_sql = LoadFactOperator.insert_sql + LoadFactorOperator.sql_query
+        redshift.run(facts_sql)

@@ -7,7 +7,10 @@ from airflow.plugins.helpers import sql_queries
 class LoadDimensionOperator(BaseOperator):
     truncate_sql = """
     TRUNCATE TABLE {destination_table};
-    """    
+    """
+    insert_sql = """
+    INSERT INTO {destination_table};
+    """
     ui_color = '#80BD9E'
 
     @apply_defaults
@@ -16,10 +19,9 @@ class LoadDimensionOperator(BaseOperator):
                  # Example:
                  # conn_id = your-connection-name
                  redshift_conn_id = "redshift",
-                 origin_table = "",
                  destination_table = "",
-                 truncate = True,
-                 load_sql_query = "",
+                 append_data = False,
+                 sql_query = "",
                  *args, **kwargs):
 
         super(LoadDimensionOperator, self).__init__(*args, **kwargs)
@@ -28,17 +30,19 @@ class LoadDimensionOperator(BaseOperator):
         # self.conn_id = conn_id
         self.redshift_conn_id = redshift_conn_id
         self.destination_table = destination_table
-        self.truncate = truncate
-        self.load_sql_query = load_sql_query
+        self.append_data = append_data
+        self.sql_query = sql_query
         
 
     def execute(self, context):
         redshift = PostgresHook(postgres_conn_id=self.redshift_conn_id)
         self.log.info('Creating dimensions tables')
-        # If truncate is True, add appropicate SQL command.
-        if self.truncate:
-            dimensions_sql = LoadDimensionOperator.truncate_sql + LoadDimensionOperator.load_sql_query
+        # If append_data is True, then only apply INSERT. Do not delete table.
+        if self.append_date:
+            dimensions_sql = LoadDimensionOperator.insert_sql + LoadDimensionOperator.sql_query
+        
         else:
-            dimensions_sql = LoadDimensionOperator.load_sql_query
+            dimensions_sql = LoadDimensionOperator.truncate_sql + LoadDimensionOperator.insert_sql + LoadDimensionOperator.sql_query
+        
         
         redshift.run(dimensions_sql)
