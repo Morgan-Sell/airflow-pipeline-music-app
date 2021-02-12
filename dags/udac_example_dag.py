@@ -30,7 +30,7 @@ start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 stage_events_to_redshift = StageToRedshiftOperator(
     task_id='Stage_events',
     dag=dag,
-    table='staging_events'
+    table='staging_events',
     s3_path='s3://udacity-dend',
     s3_bucket='/log_data'
     
