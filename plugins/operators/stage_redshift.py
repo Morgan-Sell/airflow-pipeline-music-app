@@ -24,7 +24,7 @@ class StageToRedshiftOperator(BaseOperator):
                  redshift_conn_id="redshift",
                  table="",
                  aws_credentials_id="aws_credentials",
-                 s3_path="s3://udacity-dend"
+                 s3_path="s3://udacity-dend",
                  s3_bucket="",
                  s3_key="/{ execution_date.year }/{ execution_date.month } / { ds }-events.json",
                  delimiter=",",
@@ -36,13 +36,13 @@ class StageToRedshiftOperator(BaseOperator):
         # Map params here
         # Example:
         # self.conn_id = conn_id
-        self.redshift_conn_id = redshift_conn_id,
-        self.table = table,
-        self.aws_credentials_id = aws_credentials_id,
-        self.s3_path = s3_path,
-        self.s3_bucket = s3_bucket,
-        self.s3_key = s3_key,
-        self.delimiter = delimeter,
+        self.redshift_conn_id = redshift_conn_id
+        self.table = table
+        self.aws_credentials_id = aws_credentials_id
+        self.s3_path = s3_path
+        self.s3_bucket = s3_bucket
+        self.s3_key = s3_key
+        self.delimiter = delimeter
         self.ignore_headers = ignore_headers
 
     

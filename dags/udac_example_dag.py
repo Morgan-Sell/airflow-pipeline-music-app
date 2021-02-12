@@ -16,7 +16,7 @@ default_args = {
     'retries' : 3,
     'retry_delay' : timedelta(minutes=5),
     'email_on_retry' : False,
-    'catchup' = False
+    'catchup' : False
     
 }
 
@@ -84,3 +84,4 @@ load_song_dimension_table >> run_quality_checks
 load_artist_dimension_table >> run_quality_checks
 load_time_dimension_table >> run_quality_checks
 run_quality_checks >> end_operator
+
