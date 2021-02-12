@@ -42,7 +42,7 @@ class StageToRedshiftOperator(BaseOperator):
         self.s3_path = s3_path
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
-        self.delimiter = delimeter
+        self.delimiter = delimiter
         self.ignore_headers = ignore_headers
 
     

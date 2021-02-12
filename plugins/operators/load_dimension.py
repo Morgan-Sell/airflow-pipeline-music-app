@@ -28,7 +28,7 @@ class LoadDimensionOperator(BaseOperator):
         # Example:
         # self.conn_id = conn_id
         self.redshift_conn_id = redshift_conn_id
-        self.table_name = destination_table
+        self.table_name = table_name
         self.truncate_data = truncate_data
         self.sql_query = sql_query
         

@@ -2,8 +2,7 @@ from datetime import datetime, timedelta
 import os
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators import (StageToRedshiftOperator, LoadFactOperator,
-                                LoadDimensionOperator, DataQualityOperator)
+from airflow.operators import (StageToRedshiftOperator, LoadFactOperator, LoadDimensionOperator, DataQualityOperator)
 from helpers import SqlQueries
 
 # AWS_KEY = os.environ.get('AWS_KEY')
@@ -73,12 +72,12 @@ end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
 
 start_operator >> stage_events_to_redshift
 start_operator >> stage_songs_to_redshift
-stage_events_to_redshift >> load_songplays_fact_table
-stage_songs_to_redshift >> load_songplays_fact_table
-load_songplays_fact_table >> load_user_dimension_table
-load_songplays_fact_table >> load_song_dimension_table
-load_songplays_fact_table >> load_artist_dimension_table
-load_songplays_fact_table >> load_time_dimension_table
+stage_events_to_redshift >> load_songplays_table
+stage_songs_to_redshift >> load_songplays_table
+load_songplays_table >> load_user_dimension_table
+load_songplays_table >> load_song_dimension_table
+load_songplays_table >> load_artist_dimension_table
+load_songplays_table >> load_time_dimension_table
 load_user_dimension_table >> run_quality_checks
 load_song_dimension_table >> run_quality_checks
 load_artist_dimension_table >> run_quality_checks
