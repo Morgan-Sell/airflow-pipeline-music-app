@@ -15,8 +15,7 @@ default_args = {
     'retries' : 3,
     'retry_delay' : timedelta(minutes=5),
     'email_on_retry' : False,
-    'catchup' : False
-    
+    'catchup' : False,
 }
 
 dag = DAG('udac_example_dag',
@@ -39,7 +38,7 @@ stage_events_to_redshift = StageToRedshiftOperator(
 stage_songs_to_redshift = StageToRedshiftOperator(
     task_id='Stage_songs',
     dag=dag,
-    table='staging_songs'
+    table='staging_songs',
     s3_path='s3://udacity-dend',
     s3_bucket='/song_data'
 )
