@@ -26,7 +26,7 @@ class StageToRedshiftOperator(BaseOperator):
                  aws_credentials_id="aws_credentials",
                  s3_path="s3://udacity-dend",
                  s3_bucket="",
-                 s3_key="/{ execution_date.year }/{ execution_date.month } / { ds }-events.json",
+                 s3_key="/{execution_date.year}/{execution_date.month}/{ds}-events.json",
                  delimiter=",",
                  ignore_headers=1,
                  *args, **kwargs):
