@@ -38,8 +38,8 @@ class LoadFactOperator(BaseOperator):
         
      
         if self.truncate_data:
-            redshift_hook.run(LoadDimensionOperator.truncate_sql.format(self.table))
+            redshift_hook.run(LoadFactOperator.truncate_sql.format(self.table))
         
-        redshift_hook.run(LoadDimensionOperator.insert_sql.format(self.table, self.sql_query))
+        redshift_hook.run(LoadFactOperator.insert_sql.format(self.table, self.sql_query))
         
-        self.log.info(f"Completed implemenation of LoadDFactOperator on {self.table}")
+        self.log.info(f"Completed implemenation of LoadFactOperator on {self.table}")
