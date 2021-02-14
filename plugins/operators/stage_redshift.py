@@ -4,13 +4,12 @@ from airflow.utils.decorators import apply_defaults
 from airflow.contrib.hooks.aws_hook import AwsHook
 
 class StageToRedshiftOperator(BaseOperator):
-    stage_sql_template = """
-    COPY {}
-    FROM {}
-    ACCESS_KEY_ID {}
-    SECRET_ACCESS_KEY {}
-    IGNOREHEADER {}
-    DELIMITER {}    
+    copy_sql = """
+        COPY {}
+        FROM '{}'
+        ACCESS_KEY_ID '{}'
+        SECRET_ACCESS_KEY '{}'
+        FORMAT AS JSON '{}';
     """
     
     ui_color = '#358140'
@@ -21,14 +20,12 @@ class StageToRedshiftOperator(BaseOperator):
                  # Define your operators params (with defaults) here
                  # Example:
                  # redshift_conn_id=your-connection-name
-                 redshift_conn_id="redshift",
+                 redshift_conn_id="",
                  table = "",
-                 aws_credentials_id="aws_credentials",
-                 s3_path="s3://udacity-dend",
+                 aws_credentials_id="",
                  s3_bucket="",
-                 s3_key="/{execution_date.year}/{execution_date.month}/{ds}-events.json",
-                 delimiter=",",
-                 ignore_headers=1,
+                 s3_key = "",
+                 json_path="auto",
                  *args, **kwargs):
                
 
@@ -39,12 +36,10 @@ class StageToRedshiftOperator(BaseOperator):
         self.redshift_conn_id = redshift_conn_id
         self.table = table
         self.aws_credentials_id = aws_credentials_id
-        self.s3_path = s3_path
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
-        self.delimiter = delimiter
-        self.ignore_headers = ignore_headers
-
+        self.json_path = json_path
+        
     
         
     def execute(self, context):
@@ -52,19 +47,19 @@ class StageToRedshiftOperator(BaseOperator):
         credentials = aws_hook.get_credentials()
         redshift_hook = PostgresHook(postgres_conn_id=self.redshift_conn_id)
         
-        self.log.info("Connected with {}".format(self.redshift_conn_id))
+        self.log.info("Clearing data from desination Redshift table")
         redshift_hook.run("DELETE FROM {}".format(self.table))
         
-        self.log.info("Staging data from S3 to Redshift")
+        self.log.info("Copying data from S3 to Redshift")
         rendered_key = self.s3_key.format(**context)
+        s3_path = "s3://{}/{}".format(self.s3_bucket, rendered_key)
 
-        staged_sql = StageToRedshiftOperator.stage_sql_template.format(
+        staged_sql = StageToRedshiftOperator.copy_sql.format(
             self.table,
-            self.s3_path,
+            s3_path,
             credentials.access_key,
             credentials.secret_key,
-            self.ignore_headers,
-            self.delimiter
+            self.json_path
         )
         redshift_hook.run(staged_sql)
 
