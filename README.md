@@ -1,7 +1,7 @@
 # Sparkify's Data Pipelines with Apache Airflow
 ## Improving a Music-Streaming Apps ETL Pipeline by Enhanced Automation and Monitoring
 
-
+<img src="https://github.com/Morgan-Sell/airflow-pipeline-music-app/blob/main/img/guitar_laptop.jpg" width="800" height="250">
 
 
 ## Project and Airflow Overview
