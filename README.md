@@ -16,10 +16,7 @@ Airflow's core components:
 4) Database - Stores the workflow's metadata, e.g. credentials, connections, history, and configuration.
 5) Web Interface - A control dashboard for users and maintainers.
 
+An Airflow DAG is comprised of operators that define the atomic steps of work. In this project, I developed custom operators that perform frequently used operations and allow for multiple use cases. One example is the LoadDimensionOperator. Each operator should on perform one, e.g. load data from S3 to redshift. This both allows for parrallelization, which decreases the required time to complete the operation, and simpflies debugging/monitoring. Well-defined operators improve transparency and provide more information when looking for a bug.
 
-
-Management and I selected the following objectives of the upgraded data pipeline:
-1) Dynamic and built from reusable tasks
-2) Transparent monitoring
-3) 
-Custom operators to perform tasks such as staging the data, filling the data warehouse, and running checks on the data for a music streaming app called Sparkiy.
+### Sparkify's DAG Diagram
+<img src="https://github.com/Morgan-Sell/airflow-pipeline-music-app/blob/main/img/airflow_operators_diagram.png" width="800" height="250">
