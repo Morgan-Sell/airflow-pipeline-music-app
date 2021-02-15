@@ -7,6 +7,8 @@
 ## Project and Airflow Overview
 Sparkify, a **fake** music-streaming application, was pleased with my prior worked and contracted me to further the sophistication of its data warehouse ETL pipeline. Given the company's goals of having transparent monitoring, dynamic operations, and the ability to easily backfill, management and I decided to use Apache Airflow.
 
+The project's objective is to extract raw JSON files of songs played by users and Sparkify's music library then transform the data into the appropriate facts and dimensions tables then load the tables into AWS Redshift, which is used by the data analytics/science department. 
+
 Airflow coordinates movements among data storage and processing tools. The software is **not** a data processing framework. Nothing is stored in memory.
 
 ##### Airflow's Core Components:
