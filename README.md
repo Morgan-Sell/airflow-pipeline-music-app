@@ -11,7 +11,7 @@ The project's objective is to extract raw JSON files of songs played by users an
 
 Airflow coordinates movements among data storage and processing tools. The software is **not** a data processing framework. Nothing is stored in memory.
 
-##### Airflow's Core Components:
+#### Airflow's Core Components:
 1) Scheduler - Orchestrates the execution of jobs on a trigger or schedule.
 2) Work Queue - Used by the scheduler to deliver tasks that need to be run to the workers.
 3) Worker Processes - The tasks are defined in the Directed Acyclic Graph (DAG). When the worker completes a task, it will reference the queue to process more work until no further work remains.
