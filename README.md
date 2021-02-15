@@ -22,7 +22,7 @@ Each operator performs one definite task, e.g. load data from S3 to redshift. Th
 
 
 ### Sparkify's DAG Diagram
-<img src="https://github.com/Morgan-Sell/airflow-pipeline-music-app/blob/main/img/dag_graph.png" width="700" height="225">
+<img src="https://github.com/Morgan-Sell/airflow-pipeline-music-app/blob/main/img/dag_graph.png" width="750" height="180">
 
 The diagram above visualizes the DAG's workflow. Each rectangle represents an operator/task. The arrows demonstrate dependencies. Meanwhile, the `Create_tables` operator functions independently.
 
