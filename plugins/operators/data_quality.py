@@ -4,7 +4,7 @@ from airflow.utils.decorators import apply_defaults
 
 class DataQualityOperator(BaseOperator):
     data_quality_checks = [
-        {'check_sql' : "SELEC COUNT(*) FROM users WHERE userid IS NULL",
+        {'check_sql' : "SELECT COUNT(*) FROM users WHERE userid IS NULL",
          'expected_result' : 0},
         {'check_sql' : "SELECT COUNT(*) FROM songs WHERE songid IS NULL",
          'expected_result' : 0},
