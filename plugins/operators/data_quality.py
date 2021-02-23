@@ -40,17 +40,18 @@ class DataQualityOperator(BaseOperator):
         self.log.info('Start assessment of the data quality of the dimension and facts tables.')
         
         error_count = 0
+        failing_test = []
         
         for check in DataQualityOperator.data_quality_checks:
             sql_query = check.get('check_sql')
             exp_result = check.get('expected_result')
             records = redshift_hook.get_records(sql_query)[0]
             
-            if records != records[0]:
+            if exp_result != records[0]:
                 error_count += 1
                 failing_tests.append(sql_query)
             
-            if error_cout > 0:
+            if error_count > 0:
                 self.log.info("Failed data quality tests")
                 self.log.info("No. of failed tests: {}".format(error_count))
                 self.log.info(failing_tests)
